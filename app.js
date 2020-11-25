@@ -7,8 +7,6 @@ const methodOverride = require('method-override');
 const campground = require('./models/campground');
 const morgan = require('morgan');
 
-//const bodyParser = require('body-parser')
-//app.use(bodyParser.urlencoded({extended:true}))
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended:true}));
@@ -28,7 +26,6 @@ mongoose.connect('mongodb://localhost/yelp-camp', {
         console.log('oh no mongo connection failed')
         console.log(err)
     });
-
 
 
 app.get('/', (req,res)=>{
@@ -100,6 +97,10 @@ app.delete('/campgrounds/:id', async(req, res)=>{
         console.log('delete failed');
         console.log(err)
     })
+})
+
+app.use((req, res)=>{
+    res.status(404).send('file not found')
 })
 
 app.listen(3000)
