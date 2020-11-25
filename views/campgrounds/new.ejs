@@ -1,0 +1,11 @@
+<%- include ("../partials/header") %>
+    <h1>New Campground</h1>
+    <form action="/campgrounds" method="POST">
+        <label for="title">Title</label>
+        <input type="text" placeholder = '' name="campground[title]" id="title">
+        <label for="location">Location</label>
+        <input type="text" name="campground[location]" id="location">
+        <button>Submit!</button>
+    </form>
+    <a href="/campgrounds">Go back</a>
+<%- include ("../partials/footer") %>

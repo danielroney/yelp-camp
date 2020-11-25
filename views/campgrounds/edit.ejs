@@ -1,0 +1,15 @@
+<%- include ("../partials/header") %>
+    <h1>Edit Campground</h1>
+    <form action="/campgrounds/<%=campground._id %>?_method=PUT"  method="POST">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" placeholder = '' name="campground[title]" id="title" value="<%=campground.title %> ">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" name="campground[location]" id="location" value ="<%=campground.location %> ">
+            <button>Update campground</button>
+        </div>
+    </form>
+    <a href="/campgrounds/<%=campground._id %> ">Go back</a>
+<%- include ("../partials/footer") %>

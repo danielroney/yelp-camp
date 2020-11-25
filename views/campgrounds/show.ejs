@@ -1,0 +1,12 @@
+<%- include ("../partials/header") %>
+<body>
+    <h1><%=campground.title %> </h1>
+    <h2><%=campground.location %> </h2>
+    <a href="/campgrounds/<%=campground._id %>/edit" >Edit</a>
+    <p>
+        <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST" >
+            <button>Delete</button>
+        </form>
+    </p>
+</body>
+<%- include ("../partials/footer") %>
