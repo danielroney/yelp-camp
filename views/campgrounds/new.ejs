@@ -1,4 +1,4 @@
-<%- include ("../partials/header") %>
+<% layout('layouts/boilerplate') %> 
     <h1>New Campground</h1>
     <form action="/campgrounds" method="POST">
         <label for="title">Title</label>
@@ -8,4 +8,3 @@
         <button>Submit!</button>
     </form>
     <a href="/campgrounds">Go back</a>
-<%- include ("../partials/footer") %>

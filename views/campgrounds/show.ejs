@@ -1,5 +1,4 @@
-<%- include ("../partials/header") %>
-<body>
+<% layout('layouts/boilerplate') %> >
     <h1><%=campground.title %> </h1>
     <h2><%=campground.location %> </h2>
     <a href="/campgrounds/<%=campground._id %>/edit" >Edit</a>
@@ -8,5 +7,3 @@
             <button>Delete</button>
         </form>
     </p>
-</body>
-<%- include ("../partials/footer") %>
