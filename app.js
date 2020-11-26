@@ -31,7 +31,7 @@ mongoose.connect('mongodb://localhost/yelp-camp', {
 
 
 app.get('/', (req,res)=>{
-    res.render('landing')
+    res.redirect('campgrounds')
 })
 
 app.get('/campgrounds', async(req, res)=> {
