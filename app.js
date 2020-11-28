@@ -53,7 +53,7 @@ app.get('/campgrounds/:id', async(req, res) => {
     Campground.findById(req.params.id)
     .then ((campground)=> {
         console.log(campground);
-         res.render('campgrounds/show',{campground})
+        res.render('campgrounds/show',{campground})
     })
     .catch(err => {
         console.log('we got a problem here....')
@@ -102,7 +102,7 @@ app.delete('/campgrounds/:id', async(req, res)=>{
 })
 
 app.use((req, res)=>{
-    res.status(404).send('file not found')
+    res.status(404).render('./404')
 })
 
 app.listen(3000)
