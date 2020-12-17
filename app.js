@@ -6,11 +6,15 @@ const ejsMate = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash')
 const methodOverride = require('method-override');
-
-const morgan = require('morgan');
-const ExpressError = require('./utils/ExpressError');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/users');
 const campgroundRoutes = require('./routes/campgrounds.js');
 const reviewRoutes = require('./routes/reviews.js');
+const userRoutes = require('./routes/users.js');
+const morgan = require('morgan');
+const ExpressError = require('./utils/ExpressError');
+
 const { required } = require('joi');
 
 app.engine('ejs', ejsMate);
@@ -35,18 +39,32 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+//setup Passport - see passportjs.org
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+// done setting up Passport
+
 //flash middleware
 app.use((req, res, next)=>{
+    if(!['/login', '/'].includes(req.originalUrl)){
+        req.session.returnTo = req.originalUrl;
+    };
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
-    console.log(req.flash('error'));
     next();
 })
 
 //configure routes
+app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
-app.use('/campgrounds/:id/reviews', reviewRoutes)
+app.use('/campgrounds/:id/reviews', reviewRoutes);
 
+
+//connect to database
 mongoose.connect('mongodb://localhost/yelp-camp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
