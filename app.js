@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -80,17 +84,17 @@ mongoose.connect('mongodb://localhost/yelp-camp', {
     });
 
 app.get('/', (req,res)=>{
-    //res.redirect('campgrounds')
-})
+    res.render('home')
+});
 
 app.all('*', (req, res, next)=>{
   //  res.status(404).render('./404')
   next(new ExpressError('Page not found', 404))
-})
+});
 
 app.use((err, req, res, next)=>{
     const {statusCode=500} = err
     res.status(statusCode).render('error',{err})
-})
+});
 
 app.listen(3000)
