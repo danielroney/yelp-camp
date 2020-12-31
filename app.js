@@ -121,7 +121,10 @@ app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 
 //connect to database
-mongoose.connect('mongodb://localhost/yelp-camp', {
+const dbURL = process.env.DB_URL;
+
+//mongoose.connect('mongodb://localhost/yelp-camp', {
+mongoose.connect(dbURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
