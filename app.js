@@ -8,6 +8,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash')
 const methodOverride = require('method-override');
 const passport = require('passport');
@@ -79,10 +80,39 @@ app.use(
     })
 );
 
+//connect to database
+const dbURL = process.env.DB_URL ||'mongodb://localhost/yelp-camp'
+
+mongoose.connect(dbURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+})
+    .then (()=> { 
+        console.log("Mongo connection open")
+    })
+    .catch(err => {
+        console.log('oh no mongo connection failed')
+        console.log(err)
+    });
+
+const secret = process.env.SECRET || 'thisshouldbebetter'
+
+const store = new MongoStore({
+    url: dbURL,
+    secret: secret,
+    touchAfter: 24 * 60 * 60
+})
+
+store.on('error', function (e) {
+    console.log("SESSION STORE ERROR", e)
+})
 
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: 'thisshouldbebetter',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie:{
@@ -95,13 +125,12 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
-//setup Passport - see passportjs.org
+//setup Passport for user authentication - see passportjs.org
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-// done setting up Passport
 
 //flash middleware
 app.use((req, res, next)=>{
@@ -118,25 +147,6 @@ app.use((req, res, next)=>{
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
-
-
-//connect to database
-const dbURL = process.env.DB_URL;
-
-//mongoose.connect('mongodb://localhost/yelp-camp', {
-mongoose.connect(dbURL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-})
-    .then (()=> { 
-        console.log("Mongo connection open")
-    })
-    .catch(err => {
-        console.log('oh no mongo connection failed')
-        console.log(err)
-    });
 
 app.get('/', (req,res)=>{
     res.render('home')
